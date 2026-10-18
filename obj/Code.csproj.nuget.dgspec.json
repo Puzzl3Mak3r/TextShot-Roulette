@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\tahaa\\Documents\\Obsidian Vault\\University\\2026\\s2 COS20007\\Assignment\\Code\\Code.csproj": {}
+    "C:\\Users\\tahaa\\Documents\\Obsidian Vault\\University\\2026\\s2 COS20007\\Assignment\\TextShot-Roulette\\Code.csproj": {}
   },
   "projects": {
-    "C:\\Users\\tahaa\\Documents\\Obsidian Vault\\University\\2026\\s2 COS20007\\Assignment\\Code\\Code.csproj": {
+    "C:\\Users\\tahaa\\Documents\\Obsidian Vault\\University\\2026\\s2 COS20007\\Assignment\\TextShot-Roulette\\Code.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\tahaa\\Documents\\Obsidian Vault\\University\\2026\\s2 COS20007\\Assignment\\Code\\Code.csproj",
+        "projectUniqueName": "C:\\Users\\tahaa\\Documents\\Obsidian Vault\\University\\2026\\s2 COS20007\\Assignment\\TextShot-Roulette\\Code.csproj",
         "projectName": "Code",
-        "projectPath": "C:\\Users\\tahaa\\Documents\\Obsidian Vault\\University\\2026\\s2 COS20007\\Assignment\\Code\\Code.csproj",
+        "projectPath": "C:\\Users\\tahaa\\Documents\\Obsidian Vault\\University\\2026\\s2 COS20007\\Assignment\\TextShot-Roulette\\Code.csproj",
         "packagesPath": "C:\\Users\\tahaa\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\tahaa\\Documents\\Obsidian Vault\\University\\2026\\s2 COS20007\\Assignment\\Code\\obj\\",
+        "outputPath": "C:\\Users\\tahaa\\Documents\\Obsidian Vault\\University\\2026\\s2 COS20007\\Assignment\\TextShot-Roulette\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\tahaa\\AppData\\Roaming\\NuGet\\NuGet.Config",
