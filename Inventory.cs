@@ -70,13 +70,22 @@ namespace TextShot
                 switch (randomChoice)
                 {
                     case 0:
-                        newItem = new CanOfBeer();
+                        newItem = new BuggedCircuitBoard();
                         break;
                     case 1:
-                        newItem = new HandCuffs();
+                        newItem = new CanOfBeer();
                         break;
                     case 2:
+                        newItem = new ExpiredMedicine();
+                        break;
+                    case 3:
+                        newItem = new HandCuffs();
+                        break;
+                    case 4:
                         newItem = new InfectedBullet();
+                        break;
+                    case 5:
+                        newItem = new MagnifyingGlass();
                         break;
                 }
 
