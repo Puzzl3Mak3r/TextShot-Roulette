@@ -43,6 +43,8 @@ namespace TextShot
         // Main method must be static
         public static void Main(string[] args)
         {
+
+            Item test = new Item("test", "test Item");
             while (true)
             {
                 // State Change Handler
@@ -60,7 +62,11 @@ namespace TextShot
                 Program.Command = Console.ReadLine();
 
                 Console.WriteLine(Program.Command);
-                if (Program.Command == "exit")
+                if (Program.Command == "item")
+                {
+                    test.ExecuteEffect();
+                }
+                else if (Program.Command == "exit")
                 {
                     break;
                 }
