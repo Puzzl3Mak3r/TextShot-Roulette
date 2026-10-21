@@ -1,0 +1,89 @@
+using System;
+using System.Collections.Generic;
+
+namespace TextShot
+{
+    public class Inventory
+    {
+        private List<Item> _items;
+        private Random r;
+
+        public Inventory()
+        {
+            _items = new List<Item>();
+            r = new Random();
+        }
+
+        // Adds an item to the inventory
+        public void AddItem(Item item)
+        {
+            if (item != null)
+            {
+                _items.Add(item);
+                if (Program.Debug) Console.WriteLine($"{item.Name} added to inventory.");
+            }
+        }
+
+        // Fetches (removes and returns) an item by name
+        public Item FetchItem(string itemName)
+        {
+            Item foundItem = _items.Find(i => i.Name.Equals(itemName, StringComparison.OrdinalIgnoreCase));
+            
+            if (foundItem != null)
+            {
+                _items.Remove(foundItem);
+                if (Program.Debug) Console.WriteLine($"{foundItem.Name} removed from inventory.");
+            }
+            else
+            {
+                if (Program.Debug) Console.WriteLine($"Item '{itemName}' not found in inventory.");
+            }
+
+            return foundItem;
+        }
+
+        // Reads and prints all items currently in the inventory
+        public void ReadItems()
+        {
+            Console.WriteLine("--- Inventory ---");
+            if (_items.Count == 0)
+            {
+                Console.WriteLine("Your inventory is currently empty.");
+                return;
+            }
+
+            foreach (Item item in _items)
+            {
+                Console.WriteLine($"- {item.Name}: {item.Description}");
+            }
+            Console.WriteLine("-----------------");
+        }
+
+        // Populates the inventory with a random assortment of items
+        public void PopulateInventory(int amount)
+        {
+            for (int i = 0; i < amount; i++)
+            {
+                int randomChoice = r.Next(3); // Adjust this number if you add more items to the switch statement
+                Item newItem = null;
+
+                switch (randomChoice)
+                {
+                    case 0:
+                        newItem = new CanOfBeer();
+                        break;
+                    case 1:
+                        newItem = new HandCuffs();
+                        break;
+                    case 2:
+                        newItem = new InfectedBullet();
+                        break;
+                }
+
+                AddItem(newItem);
+            }
+
+            if (Program.Debug) Console.WriteLine($"Populated inventory with {amount} random items.");
+        }
+    }
+}
