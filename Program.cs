@@ -44,7 +44,7 @@ namespace TextShot
         public static void Main(string[] args)
         {
 
-            Item test = new Item("test", "test Item");
+            Item test = new InfectedBullet();
             while (true)
             {
                 // State Change Handler

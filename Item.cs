@@ -15,7 +15,7 @@ namespace TextShot
         public string Name { get { return _name; } }
         public string Description { get { return _description; } }
 
-        public void ExecuteEffect()
+        public virtual void ExecuteEffect()
         {
             if (Program.Debug)
             {
