@@ -31,16 +31,12 @@ namespace TextShot
 
 
 
-
-
         // =====================
         // Debug
         public static bool Debug = true;
 
 
 
-
-        // Main method must be static
         public static void Main(string[] args)
         {
             // ================================
@@ -72,6 +68,7 @@ namespace TextShot
 
             // Player & Dealer Health
             int Health;
+
 
 
 
@@ -114,6 +111,7 @@ namespace TextShot
                 // {
                 //     break;
                 // }
+
                 // Console.WriteLine("name");
                 // string name = Console.ReadLine();
                 // Player Player = new Player(name, 5);
@@ -138,7 +136,9 @@ namespace TextShot
                     // Add a few lines to seperate
                     Console.WriteLine("\n\n\n");
                 }
-                
+
+
+
                 // ================================
                 // Name
                 else if (CurrentState == State.Name)
@@ -172,6 +172,8 @@ namespace TextShot
                     }
                 }
 
+
+
                 // ================================
                 // Explain Game
                 else if (CurrentState == State.ExplainGame)
@@ -180,6 +182,8 @@ namespace TextShot
                     Console.ReadLine();
                     CurrentState = State.RoundStart;
                 }
+
+
 
                 // ================================
                 // Round Start
@@ -210,6 +214,11 @@ namespace TextShot
                     Console.ReadLine();
                     CurrentState = State.LoadGun;
                 }
+
+
+
+                // ================================
+                // Load Gun
                 else if (CurrentState == State.LoadGun)
                 {
                     // Load the gun
