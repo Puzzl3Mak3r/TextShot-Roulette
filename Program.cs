@@ -1,13 +1,15 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace TextShot
 {
     class Program
     {
         // ================================
-        // State Machine
+        // State Machine, Pre Turn Decisions & Turn storage
         // ================================
 
+        // Game States
         public enum State
         {
             Start,              // Start of game
@@ -25,9 +27,12 @@ namespace TextShot
             GameOver            // Show Stats, end program
         };
 
-        // Game States
         public static State CurrentState = State.Start;
         public static State PrevState = State.Start;
+
+        // Pre Turn Decisions
+        public static Dictionary<string, bool> PreTurnDecisions = new Dictionary<string, bool>(); // Decisions defined in main
+        public static bool PlayerTurn = true; // Keeps track of whose turn it is, always start with player
 
 
 
@@ -51,6 +56,10 @@ namespace TextShot
 
             // Gun
             Gun gun = null;
+
+            // PreTurnDecisions
+            PreTurnDecisions.Add("Handcuffs", true);
+            
 
 
             // =====================
@@ -92,7 +101,7 @@ namespace TextShot
 
 
                 // ===============================
-                // Test State Machine
+                // Test Code (Priority)
                 // ===============================
 
                 // Test Code here
@@ -163,13 +172,13 @@ namespace TextShot
                     Console.ReadLine();
                     Console.WriteLine("You can look at your items from your inventory.\n(Press Enter to continue)");
                     Console.ReadLine();
-                    Console.WriteLine("You can also look at the my (the dealer) items.\nYou can also look at our healths.\n(Press Enter to continue)");
+                    Console.WriteLine("You can also look at the my items (the dealer's items).\nYou can also look at our healths.\n(Press Enter to continue)");
                     Console.ReadLine();
                     Console.WriteLine("You can either shoot me, or yourself.\n(Press Enter to continue)");
                     Console.ReadLine();
-                    Console.WriteLine("If you shoot yourself, and it's a dud, you don't lose any health and it's your turn again.\nSame goes for me.\n(Press Enter to continue)");
+                    Console.WriteLine("If you shoot yourself, and it's not a live bullet (a dud bullet), you don't lose any health and it's your turn again.\nSame goes for me.\n(Press Enter to continue)");
                     Console.ReadLine();
-                    Console.WriteLine("The first one to have their health reach 0 loses");
+                    Console.WriteLine("The first one to have their health reach 0 loses\n(Press Enter to continue)");
                     Console.ReadLine();
                     Console.WriteLine("Are you ready? (Y/n)");
                     string ready = Console.ReadLine().ToLower();
@@ -242,6 +251,41 @@ namespace TextShot
                     // Transition to PreTurnDecisions
                     Console.ReadLine();
                     CurrentState = State.PreTurnDecisions;
+                }
+
+
+
+                // ================================
+                // Pre Turn Decisions
+                else if (CurrentState == State.PreTurnDecisions)
+                {
+                    // See whose turn it is right now
+                    Console.Write("It's the ");
+                    if (PlayerTurn) { Console.WriteLine("Player's turn"); } else { Console.WriteLine("Dealer's turn"); }
+
+                    // If the key value of "Hand Cuffs" is the dictionary is true
+                    if (Debug) { Console.WriteLine($"Debug Handcuffs value: {PreTurnDecisions["Handcuffs"]}"); }
+                    if (PreTurnDecisions.ContainsKey("Handcuffs") && PreTurnDecisions["Handcuffs"] == true)
+                    {
+                        // Print who is hand cuffed
+                        if (PlayerTurn) { Console.WriteLine("Player is hand cuffed"); } else { Console.WriteLine("Dealer is hand cuffed"); }
+                        Console.WriteLine("The turn is skipped");
+                        // Change Turn
+                        PlayerTurn = !PlayerTurn;
+                        // Toggle Handcuffs
+                        PreTurnDecisions["Handcuffs"] = false;
+                        if (Debug) { Console.WriteLine("Debug Handcuffs toggled"); }
+                    }
+
+                    // Determine whose turn it is
+                    if (PlayerTurn)
+                    {
+                        CurrentState = State.PlayerTurn;
+                    }
+                    else
+                    {
+                        CurrentState = State.DealerTurn;
+                    }
                     break;
                 }
             }
