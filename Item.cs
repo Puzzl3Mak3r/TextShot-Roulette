@@ -19,7 +19,7 @@ namespace TextShot
         {
             if (Program.Debug)
             {
-                Console.WriteLine($"Effect Executed of Item: {Name}");
+                Console.WriteLine($"Debug Effect Executed of Item: {Name}");
             }
         }
     }

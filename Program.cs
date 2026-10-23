@@ -12,6 +12,7 @@ namespace TextShot
         {
             Start,              // Start of game
             Name,               // Entering Name
+            ExplainGame,        // Explains the game
             RoundStart,         // Start of Round, Set Health, Empty Inventories
             LoadGun,            // Load gun
             PreTurnDecisions,   // Any events that need to be processed before next turn, then deciding whose turn
@@ -53,26 +54,24 @@ namespace TextShot
             Random r = new Random();
 
             // Gun
-            bool[] gun;
+            Gun gun = null;
 
 
             // =====================
             // Player & Dealer Variables
 
+            // Participants
+            Player p;
+            Dealer d;
+
+            // Player Command
+            string Command = "";
+
             // Player Name
             string PlayerName = "";
 
             // Player & Dealer Health
-            int pHealth;
-            int dHealth;
-
-            // Player Command (Now static)
-            string Command = "";
-
-            // Inventories
-            Inventory pInventory = new Inventory();
-            Inventory dInventory = new Inventory();
-            int InveAmount; // Amount of items in inventory
+            int Health;
 
 
 
@@ -88,8 +87,16 @@ namespace TextShot
                 if (CurrentState != PrevState)
                 {
                     PrevState = CurrentState;
-                    if (Debug) { Console.WriteLine($"State changed to {CurrentState}"); }
+                    if (Debug) { Console.WriteLine($"\nDebug State changed to {CurrentState}\n"); }
                 }
+
+
+
+
+
+                // ===============================
+                // Test State Machine
+                // ===============================
 
                 // // Print commands
                 // Console.WriteLine("Commands:");
@@ -107,6 +114,11 @@ namespace TextShot
                 // {
                 //     break;
                 // }
+                // Console.WriteLine("name");
+                // string name = Console.ReadLine();
+                // Player Player = new Player(name, 5);
+                // Console.WriteLine($"Player: {Player.Name}, Health: {Player.Health}");
+                // Player.Inventory.PopulateInventory(5);
 
 
 
@@ -134,15 +146,37 @@ namespace TextShot
                     // Enter Name
                     Console.WriteLine("Enter Name:");
                     PlayerName = Console.ReadLine();
-                    if (Debug) { Console.WriteLine($"Name Entered: {PlayerName}"); }
+                    if (Debug) { Console.WriteLine($"Debug Name Entered: {PlayerName}"); }
 
                     // Dealer Greeting Message
-                    Console.WriteLine($"\nGreetings, {PlayerName}\nI hope you know how to play");
+                    Console.WriteLine($"\nGreetings, {PlayerName}\nI hope you know how to play (Y/n)");
 
                     // Dev Breakpoint
                     if (PlayerName == "dev") { break; }
 
                     // Transition to RoundStart
+                    string knowGame = Console.ReadLine().ToLower();
+                    while (knowGame != "y" && knowGame != "n" && knowGame != "yes" && knowGame != "no" && knowGame != "")
+                    {
+                        if (Debug) { Console.WriteLine($"Debug Invalid Input: {knowGame}"); }
+                        Console.WriteLine("Please answer yes or no.");
+                        knowGame = Console.ReadLine().ToLower();
+                    }
+                    if (knowGame == "n" || knowGame == "no")
+                    {
+                        CurrentState = State.ExplainGame;
+                    }
+                    else
+                    {
+                        CurrentState = State.RoundStart;
+                    }
+                }
+
+                // ================================
+                // Explain Game
+                else if (CurrentState == State.ExplainGame)
+                {
+                    Console.WriteLine("\nPress Enter to continue");
                     Console.ReadLine();
                     CurrentState = State.RoundStart;
                 }
@@ -155,19 +189,22 @@ namespace TextShot
                     r = new Random();
 
                     // Set Health
-                    pHealth = r.Next(3,5);
-                    dHealth = pHealth;
-                    Console.WriteLine($"{pHealth} health");
-                    if (Debug) { Console.WriteLine($"Player {pHealth}, Dealer {dHealth}"); }
+                    Health = r.Next(3,5);
+
+                    // Create Participants
+                    p = new Player(PlayerName, Health);
+                    d = new Dealer("Dealer", Health);
+                    Console.WriteLine($"You and I have {Health} health");
+                    if (Debug) { Console.WriteLine($"Debug Player {Health} health, Dealer {Health} health"); }
 
                     // Empty Inventories
-                    pInventory = new Inventory();
-                    dInventory = new Inventory();
+                    p.ClearInventory();
+                    d.ClearInventory();
 
                     // Populate Inventories
-                    InveAmount = r.Next(2, 5);
-                    pInventory.PopulateInventory(InveAmount);
-                    dInventory.PopulateInventory(InveAmount);
+                    int InveAmount = r.Next(2, 5);
+                    p.Inventory.PopulateInventory(InveAmount);
+                    d.Inventory.PopulateInventory(InveAmount);
 
                     // Transition to LoadGun
                     Console.ReadLine();
@@ -176,40 +213,15 @@ namespace TextShot
                 else if (CurrentState == State.LoadGun)
                 {
                     // Load the gun
-                    gun = new bool[r.Next(2, 8)]; // Random number of bullets
-                    if (Debug) { Console.WriteLine($"\nLoaded {gun.Length} bullets"); }
-
-                    // Guarantee at least 1 live and 1 dud by picking a live count between 1 and Length-1
-                    int liveBullets = r.Next(1, gun.Length);
-
-                    // Fill the array with the chosen amount of live bullets first
-                    for (int i = 0; i < gun.Length; i++)
-                    {
-                        gun[i] = (i < liveBullets); 
-                    }
+                    int numOfBullets = r.Next(2, 8);
+                    gun = new Gun(numOfBullets);
+                    gun.Load(numOfBullets);
 
                     // Shuffle the array to randomize bullet order (Fisher-Yates shuffle)
-                    for (int i = 0; i < gun.Length; i++)
-                    {
-                        int randomIndex = r.Next(i, gun.Length);
-                        bool temp = gun[i];
-                        gun[i] = gun[randomIndex];
-                        gun[randomIndex] = temp;
-                        
-                        if (Debug) { Console.WriteLine($"Bullet {i}: {gun[i]}"); }
-                    }
+                    gun.Shuffle();
 
                     // Print amount of live bullets
-                    if (liveBullets == 1)
-                    { Console.WriteLine($"{liveBullets} live"); }
-                    else
-                    { Console.WriteLine($"{liveBullets} lives"); }
-
-                    // Print amount of dud bullets
-                    if (gun.Length - liveBullets == 1)
-                    { Console.WriteLine($"{gun.Length - liveBullets} dud"); }
-                    else
-                    { Console.WriteLine($"{gun.Length - liveBullets} duds"); }
+                    gun.PrintLoadout();
 
                     // Flavour text
                     Console.ReadLine();

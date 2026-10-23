@@ -20,7 +20,7 @@ namespace TextShot
             if (item != null)
             {
                 _items.Add(item);
-                if (Program.Debug) Console.WriteLine($"{item.Name} added to inventory.");
+                if (Program.Debug) Console.WriteLine($"Debug {item.Name} added to inventory");
             }
         }
 
@@ -32,11 +32,11 @@ namespace TextShot
             if (foundItem != null)
             {
                 _items.Remove(foundItem);
-                if (Program.Debug) Console.WriteLine($"{foundItem.Name} removed from inventory.");
+                if (Program.Debug) Console.WriteLine($"Debug {foundItem.Name} removed from inventory");
             }
             else
             {
-                if (Program.Debug) Console.WriteLine($"Item '{itemName}' not found in inventory.");
+                if (Program.Debug) Console.WriteLine($"Debug Item '{itemName}' not found in inventory");
             }
 
             return foundItem;
@@ -48,7 +48,7 @@ namespace TextShot
             Console.WriteLine("--- Inventory ---");
             if (_items.Count == 0)
             {
-                Console.WriteLine("Your inventory is currently empty.");
+                Console.WriteLine("Your inventory is currently empty");
                 return;
             }
 
@@ -59,12 +59,17 @@ namespace TextShot
             Console.WriteLine("-----------------");
         }
 
+        public void ClearOutInventory()
+        {
+            _items.Clear();
+        }
+
         // Populates the inventory with a random assortment of items
         public void PopulateInventory(int amount)
         {
             for (int i = 0; i < amount; i++)
             {
-                int randomChoice = r.Next(3); // Adjust this number if you add more items to the switch statement
+                int randomChoice = r.Next(5);
                 Item newItem = null;
 
                 switch (randomChoice)
@@ -92,7 +97,7 @@ namespace TextShot
                 AddItem(newItem);
             }
 
-            if (Program.Debug) Console.WriteLine($"Populated inventory with {amount} random items.");
+            if (Program.Debug) Console.WriteLine($"Debug Populated inventory with {amount} random items");
         }
     }
 }
