@@ -5,39 +5,39 @@ namespace TextShot
 {
     public class Gun
     {
-        private bool[] _bullets;
+        private List<bool> _bullets;
         private int _liveBullets;
         private int _dudBullets;
         Random r = new Random();
 
         public Gun(int n)
         {
-            _bullets = new bool[n];
+            _bullets = new List<bool>();
         }
 
         public void Load(int n)
         {
-            // Initialize random number of bullets
-            _bullets = new bool[n];
-            if (Program.Debug) { Console.WriteLine($"Debug Loaded {_bullets.Length} bullets"); }
+            // Initialize fresh list
+            _bullets = new List<bool>();
+            if (Program.Debug) { Console.WriteLine($"Debug Loaded {n} bullets"); }
 
             // Guarantee at least 1 live and 1 dud
-            _liveBullets = r.Next(1, _bullets.Length);
-            _dudBullets = _bullets.Length - _liveBullets;
+            _liveBullets = r.Next(1, n);
+            _dudBullets = n - _liveBullets;
 
-            // Fill the array with the chosen amount of live bullets first
-            for (int i = 0; i < _bullets.Length; i++)
+            // Add the chosen amount of live bullets first, then duds
+            for (int i = 0; i < n; i++)
             {
-                _bullets[i] = (i < _liveBullets); 
+                _bullets.Add(i < _liveBullets); 
             }
         }
 
         public void Shuffle()
         {
-            // Shuffle the array to randomize bullet order (Fisher-Yates shuffle)
-            for (int i = 0; i < _bullets.Length; i++)
+            // Shuffle the list to randomize bullet order (Fisher-Yates shuffle)
+            for (int i = 0; i < _bullets.Count; i++)
             {
-                int randomIndex = r.Next(i, _bullets.Length);
+                int randomIndex = r.Next(i, _bullets.Count);
                 bool temp = _bullets[i];
                 _bullets[i] = _bullets[randomIndex];
                 _bullets[randomIndex] = temp;
@@ -59,6 +59,42 @@ namespace TextShot
             { Console.WriteLine($"{_dudBullets} dud bullet"); }
             else
             { Console.WriteLine($"{_dudBullets} dud bullets"); }
+        }
+
+        public void ReadCurBullent() // Read current bullet
+        {
+            if (_bullets.Count > 0)
+            {
+                Console.WriteLine($"The current bullet is a {(_bullets[0] ? "live" : "dud")} bullet");
+            }
+            else
+            {
+                Console.WriteLine("The gun is empty.");
+            }
+        }
+
+        public void EjectCurBullet() // Eject current bullet
+        {
+            if (_bullets.Count > 0)
+            {
+                // Check if the bullet being ejected is live or dud
+                bool isLive = _bullets[0];
+                
+                // Remove the bullet from the start of the list
+                _bullets.RemoveAt(0);
+                
+                // Decrement the correct counter
+                if (isLive) 
+                {
+                    _liveBullets--;
+                }
+                else
+                {
+                    _dudBullets--;
+                }
+
+                if (Program.Debug) { Console.WriteLine($"Debug Bullet Ejected. Remaining: {_bullets.Count}"); }
+            }
         }
     }
 }

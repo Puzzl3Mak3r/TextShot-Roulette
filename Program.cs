@@ -95,28 +95,7 @@ namespace TextShot
                 // Test State Machine
                 // ===============================
 
-                // // Print commands
-                // Console.WriteLine("Commands:");
-                // Console.WriteLine("<>Commands here<>");
-
-                // // Read Command
-                // Program.Command = Console.ReadLine();
-
-                // Console.WriteLine(Program.Command);
-                // if (Program.Command == "item")
-                // {
-                //     test.ExecuteEffect();
-                // }
-                // else if (Program.Command == "exit")
-                // {
-                //     break;
-                // }
-
-                // Console.WriteLine("name");
-                // string name = Console.ReadLine();
-                // Player Player = new Player(name, 5);
-                // Console.WriteLine($"Player: {Player.Name}, Health: {Player.Health}");
-                // Player.Inventory.PopulateInventory(5);
+                // Test Code here
 
 
 
@@ -156,10 +135,10 @@ namespace TextShot
 
                     // Transition to RoundStart
                     string knowGame = Console.ReadLine().ToLower();
-                    while (knowGame != "y" && knowGame != "n" && knowGame != "yes" && knowGame != "no" && knowGame != "")
+                    while (knowGame != "y" && knowGame != "n" && knowGame != "yes" && knowGame != "no")
                     {
                         if (Debug) { Console.WriteLine($"Debug Invalid Input: {knowGame}"); }
-                        Console.WriteLine("Please answer yes or no.");
+                        Console.WriteLine("Please answer yes or no\n no means I will explain the game");
                         knowGame = Console.ReadLine().ToLower();
                     }
                     if (knowGame == "n" || knowGame == "no")
@@ -178,8 +157,32 @@ namespace TextShot
                 // Explain Game
                 else if (CurrentState == State.ExplainGame)
                 {
-                    Console.WriteLine("\nPress Enter to continue");
+                    Console.WriteLine("You and I take turns using a gun.\nThe gun has a random assortment of live bullets and dud bullets.\n(Press Enter to continue)");
                     Console.ReadLine();
+                    Console.WriteLine("Each turn, you can use any items if we have any.\nItems can help your chances of survival, or decrease mine.\n(Press Enter to continue)");
+                    Console.ReadLine();
+                    Console.WriteLine("You can look at your items from your inventory.\n(Press Enter to continue)");
+                    Console.ReadLine();
+                    Console.WriteLine("You can also look at the my (the dealer) items.\nYou can also look at our healths.\n(Press Enter to continue)");
+                    Console.ReadLine();
+                    Console.WriteLine("You can either shoot me, or yourself.\n(Press Enter to continue)");
+                    Console.ReadLine();
+                    Console.WriteLine("If you shoot yourself, and it's a dud, you don't lose any health and it's your turn again.\nSame goes for me.\n(Press Enter to continue)");
+                    Console.ReadLine();
+                    Console.WriteLine("The first one to have their health reach 0 loses");
+                    Console.ReadLine();
+                    Console.WriteLine("Are you ready? (Y/n)");
+                    string ready = Console.ReadLine().ToLower();
+                    while (ready != "y" && ready != "n" && ready != "yes" && ready != "no")
+                    {
+                        if (Debug) { Console.WriteLine($"Debug Invalid Input: {ready}"); }
+                        Console.WriteLine("Please answer yes or no.\n No means I will explain the game");
+                        ready = Console.ReadLine().ToLower();
+                    }
+                    if (ready == "n" || ready == "no")
+                    {
+                        CurrentState = State.ExplainGame;
+                    }
                     CurrentState = State.RoundStart;
                 }
 
