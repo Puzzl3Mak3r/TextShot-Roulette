@@ -19,8 +19,8 @@ namespace TextShot
             LoadGun,            // Load gun
             PreTurnDecisions,   // Any events that need to be processed before next turn, then deciding whose turn
             PlayerTurn,         // Player chooses between using item or shooting gun
-            PickItem,           // Pick Item
             DealerTurn,         // Start of Dealer's Turn
+            PickItem,           // Pick Item
             DealerDecide,       // Dealer Decision Algorithm
             ShootGun,           // Use the gun to shoot, discard bullet
             RoundEnd,           // End of Round
@@ -34,6 +34,12 @@ namespace TextShot
         public static Dictionary<string, bool> PreTurnDecisions = new Dictionary<string, bool>(); // Decisions defined in main
         public static bool PlayerTurn = true; // Keeps track of whose turn it is, always start with player
 
+        // Gun
+        public static Gun gun = null;
+
+        // Participants
+        public static Player p;
+        public static Dealer d;
 
 
         // =====================
@@ -54,20 +60,13 @@ namespace TextShot
             // New Random
             Random r = new Random();
 
-            // Gun
-            Gun gun = null;
 
             // PreTurnDecisions
-            PreTurnDecisions.Add("Handcuffs", true);
-            
+            PreTurnDecisions.Add("Handcuffs", false);
 
 
             // =====================
             // Player & Dealer Variables
-
-            // Participants
-            Player p;
-            Dealer d;
 
             // Player Command
             string Command = "";
@@ -80,8 +79,6 @@ namespace TextShot
 
 
 
-
-
             // ================================
             // Game Loop
             // ================================
@@ -89,7 +86,7 @@ namespace TextShot
             // Item test = new InfectedBullet();
             while (true)
             {
-                // State Change Handler
+                // State Change Detector
                 if (CurrentState != PrevState)
                 {
                     PrevState = CurrentState;
@@ -98,15 +95,11 @@ namespace TextShot
 
 
 
-
-
                 // ===============================
                 // Test Code (Priority)
                 // ===============================
 
                 // Test Code here
-
-
 
 
 
@@ -126,7 +119,6 @@ namespace TextShot
                 }
 
 
-
                 // ================================
                 // Name
                 else if (CurrentState == State.Name)
@@ -143,12 +135,12 @@ namespace TextShot
                     if (PlayerName == "dev") { break; }
 
                     // Transition to RoundStart
-                    string knowGame = Console.ReadLine().ToLower();
+                    string knowGame = Console.ReadLine().Trim().ToLower();
                     while (knowGame != "y" && knowGame != "n" && knowGame != "yes" && knowGame != "no")
                     {
                         if (Debug) { Console.WriteLine($"Debug Invalid Input: {knowGame}"); }
                         Console.WriteLine("Please answer yes or no\n no means I will explain the game");
-                        knowGame = Console.ReadLine().ToLower();
+                        knowGame = Console.ReadLine().Trim().ToLower();
                     }
                     if (knowGame == "n" || knowGame == "no")
                     {
@@ -159,7 +151,6 @@ namespace TextShot
                         CurrentState = State.RoundStart;
                     }
                 }
-
 
 
                 // ================================
@@ -181,12 +172,12 @@ namespace TextShot
                     Console.WriteLine("The first one to have their health reach 0 loses\n(Press Enter to continue)");
                     Console.ReadLine();
                     Console.WriteLine("Are you ready? (Y/n)");
-                    string ready = Console.ReadLine().ToLower();
+                    string ready = Console.ReadLine().Trim().ToLower();
                     while (ready != "y" && ready != "n" && ready != "yes" && ready != "no")
                     {
                         if (Debug) { Console.WriteLine($"Debug Invalid Input: {ready}"); }
                         Console.WriteLine("Please answer yes or no.\n No means I will explain the game");
-                        ready = Console.ReadLine().ToLower();
+                        ready = Console.ReadLine().Trim().ToLower();
                     }
                     if (ready == "n" || ready == "no")
                     {
@@ -194,7 +185,6 @@ namespace TextShot
                     }
                     CurrentState = State.RoundStart;
                 }
-
 
 
                 // ================================
@@ -228,7 +218,6 @@ namespace TextShot
                 }
 
 
-
                 // ================================
                 // Load Gun
                 else if (CurrentState == State.LoadGun)
@@ -252,7 +241,6 @@ namespace TextShot
                     Console.ReadLine();
                     CurrentState = State.PreTurnDecisions;
                 }
-
 
 
                 // ================================
@@ -286,7 +274,165 @@ namespace TextShot
                     {
                         CurrentState = State.DealerTurn;
                     }
-                    break;
+                }
+
+
+                // ================================
+                // Player Turn
+                else if (CurrentState == State.PlayerTurn)
+                {
+                    PlayerTurn = true;
+                    Console.WriteLine("It's your turn");
+                    
+                    // Mini State machine in the player's turn
+                    while (true)
+                    {
+                        if (Debug) { Console.WriteLine("Debug Currently inside PlayerTurn State Machine\n"); }
+
+                        // Show avilable Commands
+                        Console.WriteLine("Options:\n");
+                        Console.WriteLine("g: use gun");
+                        Console.WriteLine("ui: use your items");
+                        Console.WriteLine("di: view dealer's items");
+                        Console.WriteLine("h: look at health");
+
+                        // Get input
+                        string input = Console.ReadLine().Trim().ToLower();
+                        if (Debug) { Console.WriteLine($"Debug Player Input: {input}\n"); }
+
+                        // Process input
+                        if (input == "g")
+                        {
+                            CurrentState = State.ShootGun;
+                            break;
+                        }
+                        else if (input == "ui")
+                        {
+                            CurrentState = State.PickItem;
+                            break;
+                        }
+                        else if (input == "di")
+                        {
+                            Console.WriteLine("Dealers items:");
+                            d.PrintInventory();
+                        }
+                        else if (input == "h")
+                        {
+                            Console.WriteLine($"You have {p.Health} health and the dealer has {d.Health} health");
+                        } 
+                    }
+                }
+
+
+                // ================================
+                // Dealer Turn
+                else if (CurrentState == State.DealerTurn)
+                {
+                    break; // work in progress
+                }
+
+
+                // ===============================
+                // Player pick items
+                else if (CurrentState == State.PickItem)
+                {
+                    // Map full names to your desired acronyms
+                    Dictionary<string, string> itemAcronyms = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+                    {
+                        { "Bugged Circuitboard",    "BC" },
+                        { "Can of Beer",            "CB" },
+                        { "Expired Medicine",       "EM" },
+                        { "Hand Cuffs",             "HC" },
+                        { "Infected bullet",        "IB" },
+                        { "Magnifying Glass",       "MG" }
+                    };
+
+                    Console.WriteLine("Your items:");
+                    
+                    // Temporary dictionary to track which acronyms the player can actually use right now
+                    Dictionary<string, string> availableOptions = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+
+                    // Loop through the player's actual inventory and print only what they have
+                    foreach (Item item in p.Inventory.Items)
+                    {
+                        if (itemAcronyms.ContainsKey(item.Name))
+                        {
+                            string acronym = itemAcronyms[item.Name];
+                            
+                            // Prevent printing the same option twice if they have duplicates
+                            if (!availableOptions.ContainsKey(acronym))
+                            {
+                                Console.WriteLine($"{acronym} - {item.Name}");
+                                availableOptions.Add(acronym, item.Name);
+                            }
+                        }
+                    }
+
+                    if (availableOptions.Count == 0)
+                    {
+                        Console.WriteLine("- No usable items in inventory.");
+                    }
+
+                    Console.WriteLine("\nType the acronym of the item to use, or 'c' (cancel) to go back.");
+                    
+                    // Get input
+                    string input = Console.ReadLine().Trim().ToLower();
+                    
+                    if (input == "c")
+                    {
+                        CurrentState = State.PlayerTurn;
+                    }
+                    else if (availableOptions.ContainsKey(input))
+                    {
+                        // Translate the acronym (e.g. "MG") back to the full name ("Magnifying Glass")
+                        string fullName = availableOptions[input];
+                        
+                        // Fetch and remove the item from the inventory using its full name
+                        Item selectedItem = p.Inventory.FetchItem(fullName);
+
+                        if (selectedItem != null)
+                        {
+                            Console.WriteLine($"\nYou used the {selectedItem.Name}!");
+                            selectedItem.ExecuteEffect();
+                            CurrentState = State.PlayerTurn; 
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("\nInvalid input or you don't have that item. Please try again.");
+                    }
+                }
+
+
+                // ================================
+                // Dealer Decisions
+                else if (CurrentState == State.DealerDecide)
+                {
+                    break; // work in progress
+                }
+
+
+                // ================================
+                // Shoot Gun
+                else if (CurrentState == State.ShootGun)
+                {
+                    break; // work in progress
+                }
+
+
+                // ================================
+                // End Round
+                else if (CurrentState == State.RoundEnd)
+                {
+                    break; // work in progress
+                }
+
+
+                // ================================
+                // Game over
+                else if (CurrentState == State.GameOver)
+                {
+                    break; // work in progress
                 }
             }
         }

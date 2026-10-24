@@ -14,6 +14,12 @@ namespace TextShot
             r = new Random();
         }
 
+        // Program.cs can read the list
+        public List<Item> Items 
+        { 
+            get { return _items; } 
+        }
+
         // Adds an item to the inventory
         public void AddItem(Item item)
         {
